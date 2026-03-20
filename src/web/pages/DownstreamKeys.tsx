@@ -273,10 +273,14 @@ async function copyToClipboard(text: string): Promise<void> {
   textarea.style.opacity = '0';
   textarea.style.left = '-9999px';
   document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-  document.execCommand('copy');
-  document.body.removeChild(textarea);
+    try {
+        textarea.focus();
+        textarea.select();
+        const copied = document.execCommand('copy');
+        if (!copied) throw new Error('copy_failed');
+    } finally {
+        document.body.removeChild(textarea);
+    }
 }
 
 function DownstreamKeyCopyIconButton({ fullKey }: { fullKey: string | undefined }) {
